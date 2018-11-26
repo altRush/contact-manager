@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Consumer } from '../../context';
 import TextInputGroup from '../layout/TextInputGroup';
-import axios from 'axios';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { addContact } from '../../actions/contactActions';
 
 class AddContact extends Component {
   state = {
@@ -11,7 +12,7 @@ class AddContact extends Component {
     errors: {}
   };
 
-  onSubmit = async (dispatch, e) => {
+  onSubmit = e => {
     e.preventDefault();
     const { name, email, phone } = this.state;
     if (name === '') {
@@ -35,19 +36,17 @@ class AddContact extends Component {
       phone
     };
 
-    const res = await axios.post(
-      'https://jsonplaceholder.typicode.com/users',
-      newContact
-    );
+    this.props.addContact(newContact);
 
-    dispatch({ type: 'ADD_CONTACT', payload: res.data });
-
+    // Clear state
     this.setState({
       name: '',
       email: '',
       phone: '',
       errors: {}
     });
+
+    this.props.history.push('/');
   };
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
@@ -56,52 +55,52 @@ class AddContact extends Component {
     const { name, email, phone, errors } = this.state;
 
     return (
-      <Consumer>
-        {value => {
-          const { dispatch } = value;
-          return (
-            <div className="card mb-3">
-              <div className="card-header">Add Contact</div>
-              <div className="card-body">
-                <form onSubmit={this.onSubmit.bind(this, dispatch)}>
-                  <TextInputGroup
-                    label="Name"
-                    name="name"
-                    placeholder="Enter Name"
-                    value={name}
-                    onChange={this.onChange}
-                    error={errors.name}
-                  />
-                  <TextInputGroup
-                    label="Email"
-                    name="email"
-                    type="email"
-                    placeholder="Enter Email"
-                    value={email}
-                    onChange={this.onChange}
-                    error={errors.email}
-                  />
-                  <TextInputGroup
-                    label="Phone"
-                    name="phone"
-                    placeholder="Enter Phone"
-                    value={phone}
-                    onChange={this.onChange}
-                    error={errors.phone}
-                  />
-                  <input
-                    type="submit"
-                    value="Add Contact"
-                    className="btn btn-info btn-block"
-                  />
-                </form>
-              </div>
-            </div>
-          );
-        }}
-      </Consumer>
+      <div className="card mb-3">
+        <div className="card-header">Add Contact</div>
+        <div className="card-body">
+          <form onSubmit={this.onSubmit}>
+            <TextInputGroup
+              label="Name"
+              name="name"
+              placeholder="Enter Name"
+              value={name}
+              onChange={this.onChange}
+              error={errors.name}
+            />
+            <TextInputGroup
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={this.onChange}
+              error={errors.email}
+            />
+            <TextInputGroup
+              label="Phone"
+              name="phone"
+              placeholder="Enter Phone"
+              value={phone}
+              onChange={this.onChange}
+              error={errors.phone}
+            />
+            <input
+              type="submit"
+              value="Add Contact"
+              className="btn btn-info btn-block"
+            />
+          </form>
+        </div>
+      </div>
     );
   }
 }
 
-export default AddContact;
+AddContact.propTypes = {
+  addContact: PropTypes.func.isRequired
+};
+
+export default connect(
+  null,
+  { addContact }
+)(AddContact);

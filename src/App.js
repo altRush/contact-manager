@@ -4,17 +4,20 @@ import Contacts from './components/contacts/Contacts';
 import Header from './components/layout/Header';
 import About from './components/pages/About';
 import NotFound from './components/pages/NotFound';
+
+import { Provider } from 'react-redux';
+import store from './store';
+
 import Test from './components/test/Test';
 import AddContact from './components/contacts/AddContact';
 import EditContact from './components/contacts/EditContact';
-import { Provider } from './context';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends Component {
   render() {
     return (
-      <Provider>
+      <Provider store={store}>
         <Router>
           <div className="App">
             <Header branding="Contact Manager" />

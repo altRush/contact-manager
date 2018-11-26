@@ -1,3 +1,3 @@
 ## Contact Manager
 
-First add to the repo
+Beginning with Redux production
